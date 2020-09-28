@@ -17,11 +17,12 @@ class NoteActionBuilder @Inject()(messagesApi: MessagesApi, playBodyParsers: Pla
   extends ActionBuilder[NoteRequest, AnyContent]
   with HttpVerbs {
 
-  type PostRequestBlock[A] = NoteRequest[A] => Future[Result]
+  type NoteRequestBlock[A] = NoteRequest[A] => Future[Result]
 
   override def parser: BodyParser[AnyContent] = playBodyParsers.anyContent
 
-  override def invokeBlock[A](request: Request[A], block: NoteRequest[A] => Future[Result]): Future[Result] = {
+  override def invokeBlock[A](request: Request[A],
+                              block: NoteRequestBlock[A]): Future[Result] = {
     val future = block(new NoteRequest(request, messagesApi))
 
     future.map { result =>
