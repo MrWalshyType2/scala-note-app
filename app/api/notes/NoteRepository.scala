@@ -6,8 +6,10 @@ import akka.actor.ActorSystem
 import javax.inject.Inject
 import play.api.libs.concurrent.CustomExecutionContext
 import play.api.{Logger, MarkerContext}
+import reactivemongo.api.Cursor
+import reactivemongo.api.bson.document
 import reactivemongo.api.commands.WriteResult
-import utils.DBConnection.{noteCollection, noteWriter}
+import utils.DBConnection.{noteCollection, noteRead, noteWriter}
 
 import scala.concurrent.Future
 
@@ -67,11 +69,17 @@ class NoteRepositoryImplementation @Inject()()(implicit ec: NoteExecutionContext
     get(data.id)
   }
 
+  //  type iterableFutureOfNoteData = Future[Iterable[NoteData]] <- Can define an alias for a type, which may also have types, and more types...
   override def listOfNotes()(implicit mc: MarkerContext): Future[Iterable[NoteData]] = {
     Future {
       logger.trace(s"LIST OF NOTES: ")
       noteList
     }
+    val notes: Future[List[NoteData]] = noteCollection.flatMap(_.find(document())
+      .cursor[NoteData]()
+      .collect[List](-1, Cursor.FailOnError[List[NoteData]]()))
+
+    notes
   }
 
   override def get(id: NoteId)(implicit mc: MarkerContext): Future[Option[NoteData]] = {
