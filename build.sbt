@@ -9,6 +9,7 @@ scalaVersion := "2.13.3"
 
 libraryDependencies ++= Seq(
   guice,
+  "org.reactivemongo" %% "reactivemongo" % "1.0.0",
   "org.joda" % "joda-convert" % "2.2.1",
   "net.logstash.logback" % "logstash-logback-encoder" % "6.2",
   "io.lemonlabs" %% "scala-uri" % "1.5.1",

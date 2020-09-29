@@ -1,6 +1,5 @@
-import api.notes.{NoteRepository, NoteRepositoryImplementation}
+import api.notes._
 import com.google.inject.AbstractModule
-import controllers._
 import javax.inject._
 import net.codingwell.scalaguice.ScalaModule
 import play.api.{Configuration, Environment}
