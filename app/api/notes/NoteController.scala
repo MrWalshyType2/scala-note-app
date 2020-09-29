@@ -6,7 +6,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 case class NoteFormInput(title: String, body: String)
 
@@ -40,5 +40,18 @@ class NoteController @Inject()(controllerComponents: NoteControllerComponents)(i
       }
   }
 
-
+  def create: Action[AnyContent] = NoteAction.async {
+    implicit request =>
+      form.bindFromRequest.fold(
+        formWithErrors => {
+          Future(BadRequest(Json.toJson("Bad request")))
+        },
+        note => {
+          logger.trace(s"CREATE: TITLE = ${note.title},")
+          noteResourceHandler.create(note).map { note =>
+            Ok(Json.toJson(note))
+          }
+        }
+      )
+  }
 }

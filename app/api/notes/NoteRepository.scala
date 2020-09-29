@@ -6,6 +6,7 @@ import akka.actor.ActorSystem
 import javax.inject.Inject
 import play.api.libs.concurrent.CustomExecutionContext
 import play.api.{Logger, MarkerContext}
+import reactivemongo.api.commands.WriteResult
 import utils.DBConnection.{noteCollection, noteWriter}
 
 import scala.concurrent.Future
@@ -24,7 +25,7 @@ object NoteId {
   }
 
   def unapply(noteId: NoteId): Option[String] = {
-    require(noteId != null)
+//    require(noteId != null)
     Option(noteId.underlying.toString)
   }
 }
@@ -36,7 +37,7 @@ class NoteExecutionContext @Inject()(actorSystem: ActorSystem)
 // Non-blocking interface
 trait NoteRepository {
 
-  def create(data: NoteData)(implicit mc: MarkerContext): Future[NoteId]
+  def create(data: NoteData)(implicit mc: MarkerContext): Future[Option[NoteData]]
 
   def listOfNotes()(implicit mc: MarkerContext): Future[Iterable[NoteData]]
 
@@ -60,12 +61,12 @@ class NoteRepositoryImplementation @Inject()()(implicit ec: NoteExecutionContext
     NoteData(NoteId("5"), "title 5", "note post 5")
   )
 
-  override def create(data: NoteData)(implicit mc: MarkerContext): Future[NoteId] = {
-    noteCollection.flatMap(_.insert.one(data).map(_ => {}))
+  override def create(data: NoteData)(implicit mc: MarkerContext): Future[Option[NoteData]] = {
     Future {
       logger.trace(s"CREATE NOTE: DATA = $data")
-      data.id
+      noteCollection.flatMap(_.insert.one(data))
     }
+    get(data.id)
   }
 
   override def listOfNotes()(implicit mc: MarkerContext): Future[Iterable[NoteData]] = {

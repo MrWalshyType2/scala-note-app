@@ -23,13 +23,14 @@ class NoteResourceHandler @Inject()(
     NoteResource(n.id.toString, n.title, n.body)
   }
 
-  def create(noteInput: NoteFormInput)(implicit mc: MarkerContext): Future[NoteResource] = {
+  def create(noteInput: NoteFormInput)(implicit mc: MarkerContext): Future[Option[NoteResource]] = {
     // Generate ID, check if in db already before creating
-    val data = NoteData(NoteId("22"), noteInput.title, noteInput.body)
+    val data = NoteData(NoteId("2"), noteInput.title, noteInput.body)
 
-    // Not creating note here, return the input instead
-    noteRepository.create(data).map { id =>
-      createNoteResource(data)
+    noteRepository.create(data).map { result =>
+      result.map { maybeNoteData =>
+        createNoteResource(maybeNoteData)
+      }
     }
   }
 
