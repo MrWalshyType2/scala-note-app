@@ -1,9 +1,12 @@
 package api.notes
 
+import java.util.Optional
+
 import akka.actor.ActorSystem
 import javax.inject.Inject
 import play.api.libs.concurrent.CustomExecutionContext
 import play.api.{Logger, MarkerContext}
+import utils.DBConnection.{noteCollection, noteWriter}
 
 import scala.concurrent.Future
 
@@ -18,6 +21,11 @@ object NoteId {
     // Tests an expression, blames the caller if false | IllegalArgumentException
     require(raw != null)
     new NoteId(Integer.parseInt(raw))
+  }
+
+  def unapply(noteId: NoteId): Option[String] = {
+    require(noteId != null)
+    Option(noteId.underlying.toString)
   }
 }
 
@@ -53,6 +61,7 @@ class NoteRepositoryImplementation @Inject()()(implicit ec: NoteExecutionContext
   )
 
   override def create(data: NoteData)(implicit mc: MarkerContext): Future[NoteId] = {
+    noteCollection.flatMap(_.insert.one(data).map(_ => {}))
     Future {
       logger.trace(s"CREATE NOTE: DATA = $data")
       data.id

@@ -1,8 +1,8 @@
 import javax.inject.Inject
 import play.api.OptionalDevContext
 import play.api.http.{DefaultHttpRequestHandler, HttpConfiguration, HttpErrorHandler, HttpFilters}
-import play.api.mvc.{Handler, RequestHeader}
 import play.api.mvc.request.RequestTarget
+import play.api.mvc.{Handler, RequestHeader}
 import play.api.routing.Router
 import play.core.WebCommands
 
