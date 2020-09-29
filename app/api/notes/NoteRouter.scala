@@ -13,5 +13,7 @@ class NoteRouter @Inject()(controller: NoteController) extends SimpleRouter {
     case GET(p"/all") => controller.getAll
 
     case GET(p"/$id") => controller.get(id)
+
+    case POST(p"/")  => controller.create
   }
 }
