@@ -45,9 +45,9 @@ class NoteExecutionContext @Inject()(actorSystem: ActorSystem)
 // Non-blocking interface
 trait NoteRepository {
 
-  def create(data: NoteData)(implicit mc: MarkerContext): Future[Option[NoteData]]
+  def create(data: NoteData): Future[Option[NoteData]]
 
-  def listOfNotes()(implicit mc: MarkerContext): Future[Iterable[NoteData]]
+  def listOfNotes(): Future[Iterable[NoteData]]
 
   def get(id: NoteId): Future[Option[NoteData]]
 
@@ -69,18 +69,14 @@ class NoteRepositoryImplementation @Inject()()(implicit ec: NoteExecutionContext
     NoteData(NoteId("5"), "title 5", "note post 5")
   )
 
-  override def create(data: NoteData)(implicit mc: MarkerContext): Future[Option[NoteData]] = {
+  override def create(data: NoteData): Future[Option[NoteData]] = {
     logger.trace(s"CREATE NOTE: DATA = $data")
     noteCollection.flatMap(_.insert.one(data))
     get(data.id)
   }
 
   //  type iterableFutureOfNoteData = Future[Iterable[NoteData]] <- Can define an alias for a type, which may also have types, and more types...
-  override def listOfNotes()(implicit mc: MarkerContext): Future[Iterable[NoteData]] = {
-    Future {
-      logger.trace(s"LIST OF NOTES: ")
-      noteList
-    }
+  override def listOfNotes(): Future[Iterable[NoteData]] = {
     val notes: Future[List[NoteData]] = noteCollection.flatMap(_.find(document())
       .cursor[NoteData]()
       .collect[List](-1, Cursor.FailOnError[List[NoteData]]()))
