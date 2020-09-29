@@ -6,10 +6,16 @@ import akka.actor.ActorSystem
 import javax.inject.Inject
 import play.api.libs.concurrent.CustomExecutionContext
 import play.api.{Logger, MarkerContext}
-import reactivemongo.api.commands.WriteResult
-import utils.DBConnection.{noteCollection, noteWriter}
+import reactivemongo.api.Cursor
+import reactivemongo.api.bson.{BSONDocument, document}
 
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import utils.DBConnection.{noteCollection, noteRead, noteWriter}
+
+import scala.collection.Factory
+import scala.concurrent.duration.{Duration, MILLISECONDS}
+import scala.concurrent.{Await, Future}
+import scala.util.{Failure, Success}
 
 final case class NoteData(id: NoteId, title: String, body: String)
 
@@ -41,7 +47,7 @@ trait NoteRepository {
 
   def listOfNotes()(implicit mc: MarkerContext): Future[Iterable[NoteData]]
 
-  def get(id: NoteId)(implicit mc: MarkerContext): Future[Option[NoteData]]
+  def get(id: NoteId): Future[Option[NoteData]]
 
   def update(): Future[AnyVal] = ??? // TODO:
 
@@ -74,11 +80,9 @@ class NoteRepositoryImplementation @Inject()()(implicit ec: NoteExecutionContext
     }
   }
 
-  override def get(id: NoteId)(implicit mc: MarkerContext): Future[Option[NoteData]] = {
-    Future {
-      logger.trace(s"GET NOTE: ID = $id")
-      noteList.find(note => note.id == id)
-    }
+  override def get(id: NoteId): Future[Option[NoteData]] = {
+    val query = document("id" -> document("raw" -> id.underlying.toString))
+    noteCollection.flatMap(_.find(query).one)
   }
 
 }
