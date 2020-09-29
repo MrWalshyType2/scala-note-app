@@ -5,6 +5,7 @@ import play.api.MarkerContext
 import play.api.libs.json._
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Random
 
 // DTO
 case class NoteResource(id: String, title: String, body: String)
@@ -25,7 +26,8 @@ class NoteResourceHandler @Inject()(
 
   def create(noteInput: NoteFormInput)(implicit mc: MarkerContext): Future[Option[NoteResource]] = {
     // Generate ID, check if in db already before creating
-    val data = NoteData(NoteId("2"), noteInput.title, noteInput.body)
+
+    val data = NoteData(NoteId(s"${Random.nextInt()}"), noteInput.title, noteInput.body)
 
     noteRepository.create(data).map { result =>
       result.map { maybeNoteData =>
