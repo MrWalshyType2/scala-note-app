@@ -62,10 +62,8 @@ class NoteRepositoryImplementation @Inject()()(implicit ec: NoteExecutionContext
   )
 
   override def create(data: NoteData)(implicit mc: MarkerContext): Future[Option[NoteData]] = {
-    Future {
-      logger.trace(s"CREATE NOTE: DATA = $data")
-      noteCollection.flatMap(_.insert.one(data))
-    }
+    logger.trace(s"CREATE NOTE: DATA = $data")
+    noteCollection.flatMap(_.insert.one(data))
     get(data.id)
   }
 
