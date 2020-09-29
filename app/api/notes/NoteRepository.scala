@@ -1,10 +1,9 @@
-package controllers
+package api.notes
 
 import akka.actor.ActorSystem
-import com.sun.xml.internal.bind.v2.TODO
 import javax.inject.Inject
-import play.api.{Logger, MarkerContext}
 import play.api.libs.concurrent.CustomExecutionContext
+import play.api.{Logger, MarkerContext}
 
 import scala.concurrent.Future
 

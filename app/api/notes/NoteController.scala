@@ -1,10 +1,10 @@
-package controllers
+package api.notes
 
 import javax.inject.Inject
 import play.api.Logger
 import play.api.data.Form
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
+import play.api.mvc.{Action, AnyContent}
 
 import scala.concurrent.ExecutionContext
 

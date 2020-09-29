@@ -1,4 +1,4 @@
-package controllers
+package api.notes
 
 import javax.inject.Inject
 import play.api.routing.Router.Routes

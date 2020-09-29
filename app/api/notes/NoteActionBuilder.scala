@@ -1,10 +1,9 @@
-package controllers
+package api.notes
 
 import javax.inject.Inject
-import play.api.MarkerContext
 import play.api.http.{FileMimeTypes, HttpVerbs}
 import play.api.i18n.{Langs, MessagesApi}
-import play.api.mvc.{ActionBuilder, AnyContent, BaseController, BodyParser, ControllerComponents, DefaultActionBuilder, MessagesRequestHeader, PlayBodyParsers, PreferredMessagesProvider, Request, Result, WrappedRequest}
+import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future}
 

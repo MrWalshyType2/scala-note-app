@@ -1,3 +1,4 @@
+import api.notes.{NoteRepository, NoteRepositoryImplementation}
 import com.google.inject.AbstractModule
 import controllers._
 import javax.inject._
