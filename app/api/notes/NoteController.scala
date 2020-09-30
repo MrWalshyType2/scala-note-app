@@ -65,4 +65,18 @@ class NoteController @Inject()(controllerComponents: NoteControllerComponents)(i
         }
       )
   }
+
+  def update: Action[AnyContent] = NoteAction.async {
+    implicit request =>
+      updateForm.bindFromRequest.fold(
+        formWithErrors => {
+          Future(BadRequest(Json.toJson("Bad request")))
+        },
+        note => {
+          noteResourceHandler.update(note).map { note =>
+            Ok(Json.toJson(note))
+          }
+        }
+      )
+  }
 }

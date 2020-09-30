@@ -51,7 +51,7 @@ trait NoteRepository {
 
   def get(id: NoteId): Future[Option[NoteData]]
 
-  def update(): Future[AnyVal] = ??? // TODO:
+  def update(data: NoteData): Future[Option[NoteData]] = ??? // TODO:
 
   def delete(): Future[AnyVal] = ??? // TODO:
 }
