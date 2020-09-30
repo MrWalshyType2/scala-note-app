@@ -7,9 +7,11 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
 
 import scala.concurrent.{ExecutionContext, Future}
+import play.api.data.Forms._
 
 case class NoteFormInput(title: String, body: String)
 case class UpdateNoteFormInput(id: String, title: String, body: String)
+case class DeleteFormInput(id: String)
 
 class NoteController @Inject()(controllerComponents: NoteControllerComponents)(implicit ec: ExecutionContext)
   extends NoteBaseController(controllerComponents) {
@@ -17,8 +19,6 @@ class NoteController @Inject()(controllerComponents: NoteControllerComponents)(i
   private val logger = Logger(getClass)
 
   private val form: Form[NoteFormInput] = {
-    import play.api.data.Forms._
-
     Form(mapping(
       "title" -> nonEmptyText,
       "body" -> text
@@ -26,13 +26,17 @@ class NoteController @Inject()(controllerComponents: NoteControllerComponents)(i
   }
 
   private val updateForm: Form[UpdateNoteFormInput] = {
-    import play.api.data.Forms._
-
     Form(mapping(
       "id" -> nonEmptyText,
       "title" -> nonEmptyText,
       "body" -> nonEmptyText
     )(UpdateNoteFormInput.apply)(UpdateNoteFormInput.unapply))
+  }
+
+  private val deleteForm: Form[DeleteFormInput] = {
+    Form(mapping(
+      "id" -> nonEmptyText
+    )(DeleteFormInput.apply)(DeleteFormInput.unapply))
   }
 
   def get(id: String): Action[AnyContent] = NoteAction.async {
@@ -76,6 +80,19 @@ class NoteController @Inject()(controllerComponents: NoteControllerComponents)(i
           noteResourceHandler.update(note).map { note =>
             Ok(Json.toJson(note))
           }
+        }
+      )
+  }
+
+  def delete: Action[AnyContent] = NoteAction.async {
+    implicit request =>
+      deleteForm.bindFromRequest.fold(
+        formWithErrors => {
+          Future(BadRequest(Json.toJson("Bad request")))
+        },
+        noteId => {
+          noteResourceHandler.delete(noteId.id)
+          Future(Ok(Json.toJson("Success")))
         }
       )
   }
