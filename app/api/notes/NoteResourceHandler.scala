@@ -50,4 +50,14 @@ class NoteResourceHandler @Inject()(
       noteDataList.map(noteData => createNoteResource(noteData))
     }
   }
+
+  def update(noteInput: UpdateNoteFormInput): Future[Option[NoteResource]] = {
+    val data = NoteData(NoteId(noteInput.id), noteInput.title, noteInput.body)
+
+    noteRepository.update(data).map { maybeNoteData =>
+      maybeNoteData.map { noteData =>
+        createNoteResource(noteData)
+      }
+    }
+  }
 }

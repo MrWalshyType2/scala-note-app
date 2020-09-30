@@ -9,6 +9,7 @@ import play.api.mvc.{Action, AnyContent}
 import scala.concurrent.{ExecutionContext, Future}
 
 case class NoteFormInput(title: String, body: String)
+case class UpdateNoteFormInput(id: String, title: String, body: String)
 
 class NoteController @Inject()(controllerComponents: NoteControllerComponents)(implicit ec: ExecutionContext)
   extends NoteBaseController(controllerComponents) {
@@ -22,6 +23,16 @@ class NoteController @Inject()(controllerComponents: NoteControllerComponents)(i
       "title" -> nonEmptyText,
       "body" -> text
     )(NoteFormInput.apply)(NoteFormInput.unapply))
+  }
+
+  private val updateForm: Form[UpdateNoteFormInput] = {
+    import play.api.data.Forms._
+
+    Form(mapping(
+      "id" -> nonEmptyText,
+      "title" -> nonEmptyText,
+      "body" -> nonEmptyText
+    )(UpdateNoteFormInput.apply)(UpdateNoteFormInput.unapply))
   }
 
   def get(id: String): Action[AnyContent] = NoteAction.async {
@@ -49,6 +60,20 @@ class NoteController @Inject()(controllerComponents: NoteControllerComponents)(i
         note => {
           logger.trace(s"CREATE: TITLE = ${note.title},")
           noteResourceHandler.create(note).map { note =>
+            Ok(Json.toJson(note))
+          }
+        }
+      )
+  }
+
+  def update: Action[AnyContent] = NoteAction.async {
+    implicit request =>
+      updateForm.bindFromRequest.fold(
+        formWithErrors => {
+          Future(BadRequest(Json.toJson("Bad request")))
+        },
+        note => {
+          noteResourceHandler.update(note).map { note =>
             Ok(Json.toJson(note))
           }
         }

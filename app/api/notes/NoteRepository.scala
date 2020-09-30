@@ -51,7 +51,7 @@ trait NoteRepository {
 
   def get(id: NoteId): Future[Option[NoteData]]
 
-  def update(): Future[AnyVal] = ??? // TODO:
+  def update(data: NoteData): Future[Option[NoteData]]
 
   def delete(): Future[AnyVal] = ??? // TODO:
 }
@@ -89,4 +89,10 @@ class NoteRepositoryImplementation @Inject()()(implicit ec: NoteExecutionContext
     noteCollection.flatMap(_.find(query).one)
   }
 
+  override def update(data: NoteData): Future[Option[NoteData]] = {
+    val query = document("id" -> document("raw" -> NoteId.unapply(data.id)))
+
+    noteCollection.flatMap(_.update.one(query, data))
+    get(data.id)
+  }
 }
