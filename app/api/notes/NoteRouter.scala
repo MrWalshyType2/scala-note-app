@@ -17,5 +17,7 @@ class NoteRouter @Inject()(controller: NoteController) extends SimpleRouter {
     case POST(p"/")  => controller.create
 
     case PUT(p"/") => controller.update
+
+    case DELETE(p"/") => controller.delete
   }
 }
