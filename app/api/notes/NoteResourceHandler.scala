@@ -60,4 +60,9 @@ class NoteResourceHandler @Inject()(
       }
     }
   }
+
+  def delete(id: String): Unit = {
+    val noteId = NoteId(id)
+    noteRepository.delete(noteId)
+  }
 }
