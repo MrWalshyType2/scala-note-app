@@ -18,7 +18,7 @@ object NoteResource {
 // Controls data access, returns a [NoteResource]
 class NoteResourceHandler @Inject()(
    routerProvider: Provider[NoteRouter],
-   noteRepository: NoteRepository)(implicit ec: ExecutionContext) {
+   noteRepository: NoteRepository, idGenerator: IdGenerator)(implicit ec: ExecutionContext) {
 
   private def createNoteResource(n: NoteData): NoteResource = {
     NoteResource(n.id.toString, n.title, n.body)
@@ -27,7 +27,8 @@ class NoteResourceHandler @Inject()(
   def create(noteInput: NoteFormInput)(implicit mc: MarkerContext): Future[Option[NoteResource]] = {
     // Generate ID, check if in db already before creating
 
-    val data = NoteData(NoteId(s"${Random.nextInt()}"), noteInput.title, noteInput.body)
+//    val data = NoteData(NoteId(s"${Random.nextInt()}"), noteInput.title, noteInput.body)
+    val data = NoteData(idGenerator.generate, noteInput.title, noteInput.body)
 
     noteRepository.create(data).map { result =>
       result.map { maybeNoteData =>
