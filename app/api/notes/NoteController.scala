@@ -3,11 +3,11 @@ package api.notes
 import javax.inject.Inject
 import play.api.Logger
 import play.api.data.Form
+import play.api.data.Forms._
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
 
 import scala.concurrent.{ExecutionContext, Future}
-import play.api.data.Forms._
 
 case class NoteFormInput(title: String, body: String)
 case class UpdateNoteFormInput(id: String, title: String, body: String)
@@ -18,7 +18,7 @@ class NoteController @Inject()(controllerComponents: NoteControllerComponents)(i
 
   private val logger = Logger(getClass)
 
-  private val form: Form[NoteFormInput] = {
+  val form: Form[NoteFormInput] = {
     Form(mapping(
       "title" -> nonEmptyText,
       "body" -> text
