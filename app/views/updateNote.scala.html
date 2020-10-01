@@ -1,0 +1,17 @@
+@import api.notes.UpdateNoteFormInput
+@import helper._
+@(myForm: Form[UpdateNoteFormInput], postUrl: Call)(implicit request: MessagesProvider)
+
+@main("Update") {
+    <div class="container">
+        <h1 class="display-1">Update a Note!</h1>
+        <div class="row">
+            @form(postUrl) {
+                @inputText(myForm("id"))
+                @inputText(myForm("title"))
+                @inputText(myForm("body"))
+                <button type="submit">Update Note</button>
+            }
+        </div>
+    </div>
+}

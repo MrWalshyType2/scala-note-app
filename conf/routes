@@ -6,13 +6,14 @@
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
 GET     /create                     controllers.HomeController.create
+GET     /update                     controllers.HomeController.update
 
 # Notes router mapping
 # ->     /notes                      api.notes.NoteRouter
 GET     /notes/                     api.notes.NoteController.getAll
 GET     /notes/:id                  api.notes.NoteController.get(id)
 POST    /notes/                     api.notes.NoteController.create
-PUT     /notes/                     api.notes.NoteController.update
+POST    /notes/update/              api.notes.NoteController.update
 DELETE  /notes/                     api.notes.NoteController.delete
 
 # Map static resources from the /public folder to the /assets URL path

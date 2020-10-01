@@ -36,4 +36,9 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
     val postUrl = Call.apply("POST", "http://localhost:9000/notes")
     Ok(views.html.createNote(noteController.form, postUrl))
   }
+
+  def update() = Action { implicit request: Request[AnyContent] =>
+    val putUrl = Call.apply("POST", "http://localhost:9000/notes/update")
+    Ok(views.html.updateNote(noteController.updateForm, putUrl))
+  }
 }

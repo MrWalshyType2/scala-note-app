@@ -25,7 +25,7 @@ class NoteController @Inject()(controllerComponents: NoteControllerComponents)(i
     )(NoteFormInput.apply)(NoteFormInput.unapply))
   }
 
-  private val updateForm: Form[UpdateNoteFormInput] = {
+  val updateForm: Form[UpdateNoteFormInput] = {
     Form(mapping(
       "id" -> nonEmptyText,
       "title" -> nonEmptyText,
@@ -33,7 +33,7 @@ class NoteController @Inject()(controllerComponents: NoteControllerComponents)(i
     )(UpdateNoteFormInput.apply)(UpdateNoteFormInput.unapply))
   }
 
-  private val deleteForm: Form[DeleteFormInput] = {
+  val deleteForm: Form[DeleteFormInput] = {
     Form(mapping(
       "id" -> nonEmptyText
     )(DeleteFormInput.apply)(DeleteFormInput.unapply))
