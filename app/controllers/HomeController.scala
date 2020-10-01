@@ -41,4 +41,9 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
     val putUrl = Call.apply("POST", "http://localhost:9000/notes/update")
     Ok(views.html.updateNote(noteController.updateForm, putUrl))
   }
+
+  def delete() = Action { implicit request: Request[AnyContent] =>
+    val delUrl = Call.apply("POST", "http://localhost:9000/notes/delete")
+    Ok(views.html.deleteNote(noteController.deleteForm, delUrl))
+  }
 }

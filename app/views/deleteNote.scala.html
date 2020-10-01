@@ -1,0 +1,15 @@
+@import api.notes.DeleteFormInput
+@import helper._
+@(myForm: Form[DeleteFormInput], postUrl: Call)(implicit request: MessagesProvider)
+
+@main("Delete") {
+<div class="container">
+    <h1 class="display-1">Delete a Note!</h1>
+    <div class="row">
+        @form(postUrl) {
+        @inputText(myForm("id"))
+        <button type="submit">Delete Note</button>
+        }
+    </div>
+</div>
+}

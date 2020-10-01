@@ -7,6 +7,7 @@
 GET     /                           controllers.HomeController.index
 GET     /create                     controllers.HomeController.create
 GET     /update                     controllers.HomeController.update
+GET     /delete                     controllers.HomeController.delete
 
 # Notes router mapping
 # ->     /notes                      api.notes.NoteRouter
@@ -14,7 +15,7 @@ GET     /notes/                     api.notes.NoteController.getAll
 GET     /notes/:id                  api.notes.NoteController.get(id)
 POST    /notes/                     api.notes.NoteController.create
 POST    /notes/update/              api.notes.NoteController.update
-DELETE  /notes/                     api.notes.NoteController.delete
+POST    /notes/delete/              api.notes.NoteController.delete
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
